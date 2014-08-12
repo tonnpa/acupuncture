@@ -7,6 +7,18 @@ public class Application {
 
     public static void main(String[] args){
         System.out.println(System.getProperty("user.dir"));
+        File benh_in = new File("./text_src/Benh");
+        File benh_out = new File("./sql/benh.sql");
+        try{
+            benh_out.createNewFile();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        Benh benh = new Benh();
+        benh.write_sql_statements(benh_in,benh_out);
+    }
+
+    public static void extract_huyet_details(){
         // Kinh 0
         File kinh0_in = new File("./text_src/Kinh0");
         File kinh0_out = new File("./sql/kinh0.sql");
