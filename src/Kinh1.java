@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,25 +8,25 @@ import java.util.regex.Pattern;
  * Created by Ani on 8/4/14.
  */
 public class Kinh1 {
-//    private static final int so_kinh = 1;
 
     public void write_sql_statements(File source, File destination){
         try (BufferedReader br = new BufferedReader(new FileReader(source));
              PrintWriter pw = new PrintWriter(new FileWriter(destination))) {
+            // Declaration of variables
             String line;
             String ten_huyet = "", vi_tri = "", lay_huyet = "", thu_thuat = "";
             List<String> chu_tri_array = new ArrayList<>();
             int so_kinh = -1, so_huyet = -1;
+            String regex = "^[i|v|x]+\\s*[0-9]+";
+            Pattern pattern = Pattern.compile(regex);
 
             while ((line = br.readLine()) != null){
                 line = line.toLowerCase();
                 if (line.endsWith(".")){
                     line = line.substring(0, line.length()-1);
                 }
-
-                String regex = "^[i|v|x]+\\s*[0-9]+";
-                Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(line);
+
                 while(matcher.find()) {
                     // new huyet
                     // 1. write out previous huyet to file
@@ -35,25 +34,23 @@ public class Kinh1 {
                     // 3. store information about new huyet
 
                     // Step 1
-
                     String sql_command = insert_huyet_command(so_kinh, so_huyet, ten_huyet,
                                                               vi_tri, lay_huyet, thu_thuat);
                     pw.println(sql_command);
-
                     for (String chu_tri : chu_tri_array){
                         sql_command = insert_chu_tri_command(so_kinh, so_huyet, chu_tri);
                         pw.println(sql_command);
                     }
 
                     // Step 2
-
-                    so_kinh = so_huyet = -1;
-                    ten_huyet = ""; vi_tri = ""; lay_huyet = ""; thu_thuat = "";
+                    vi_tri = "";
+                    lay_huyet = "";
+                    thu_thuat = "";
                     chu_tri_array.clear();
 
                     // Step 3
                     String match = line.substring(matcher.start(),matcher.end());
-                    so_kinh = romanToInteger(match.replaceAll("\\d","").trim());
+                    so_kinh = RomanNumeral.romanToInteger(match.replaceAll("\\d", "").trim());
                     so_huyet = Integer.parseInt(match.replaceAll("\\D",""));
 
                     if (line.contains("(")){
@@ -122,50 +119,5 @@ public class Kinh1 {
                 "\'" + chu_tri.toLowerCase().trim() + "\'" +
                 ");";
     }
-
-    private static int romanToInteger(String val)
-    {
-        String aux=val.toUpperCase();
-        int sum=0, max=aux.length(), i=0;
-        while(i<max)
-        {
-            if ((i+1)<max && valueOf(aux.charAt(i+1))>valueOf(aux.charAt(i)))
-            {
-                sum+=valueOf(aux.charAt(i+1)) - valueOf(aux.charAt(i));
-                i+=2;
-            }
-            else
-            {
-                sum+=valueOf(aux.charAt(i));
-                i+=1;
-            }
-        }
-        return sum;
-    }
-
-    private static int valueOf(Character c)
-    {
-        char aux = Character.toUpperCase(c);
-        switch(aux)
-        {
-            case 'I':
-                return 1;
-            case 'V':
-                return 5;
-            case 'X':
-                return 10;
-            case 'L':
-                return 50;
-            case 'C':
-                return 100;
-            case 'D':
-                return 500;
-            case 'M':
-                return 1000;
-            default:
-                return 0;
-        }
-    }
-
 }
 
