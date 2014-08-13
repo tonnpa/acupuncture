@@ -7,10 +7,13 @@ public class Application {
 
     public static void main(String[] args){
         System.out.println(System.getProperty("user.dir"));
+        extract_huyet_details();
+
         File benh_in = new File("./text_src/Benh");
         File benh_out = new File("./sql/benh.sql");
         try{
-            benh_out.createNewFile();
+            boolean new_file = benh_out.createNewFile();
+            ConsoleFeedback.create_file(benh_out, new_file);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -23,7 +26,8 @@ public class Application {
         File kinh0_in = new File("./text_src/Kinh0");
         File kinh0_out = new File("./sql/kinh0.sql");
         try{
-            kinh0_out.createNewFile();
+            boolean new_file = kinh0_out.createNewFile();
+            ConsoleFeedback.create_file(kinh0_out, new_file);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -34,7 +38,8 @@ public class Application {
         File kinh1_in = new File("./text_src/Kinh1-14");
         File kinh1_out = new File("./sql/kinh1-14.sql");
         try{
-            kinh1_out.createNewFile();
+            boolean new_file = kinh1_out.createNewFile();
+            ConsoleFeedback.create_file(kinh1_out, new_file);
         } catch (IOException e){
             e.printStackTrace();
         }

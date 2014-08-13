@@ -11,16 +11,17 @@ public class Benh {
     public void write_sql_statements(File source, File destination){
         File temp = new File("./text_src/temp");
         try{
-            temp.createNewFile();
+            boolean new_file = temp.createNewFile();
+            ConsoleFeedback.create_file(temp, new_file);
         } catch (IOException e){
             e.printStackTrace();
         }
         trim_text(source, temp);
-//        populate_nhom_benh(temp, destination);
-//        populate_benh_tc(temp, destination);
-//        populate_benh_ccsb(temp, destination);
+        populate_nhom_benh(temp, destination);
+        populate_benh_tc(temp, destination);
+        populate_benh_ccsb(temp, destination);
         populate_benh_phdt(temp, destination);
-//        temp.delete();
+        temp.delete();
     }
 
     private void populate_nhom_benh(File source, File destination){
@@ -156,9 +157,6 @@ public class Benh {
                 prev_line = br_slow.readLine();
                 if (line.startsWith("tc")){
                     // Step 1
-                    System.out.println("================================");
-                    System.out.println(ten_benh);
-                    System.out.println("================================");
                     write_out_phdt(pw, ten_benh, phdt_list);
 
                     // Step 2
@@ -184,9 +182,6 @@ public class Benh {
                     phdt_catch = false;
                 }
             }
-            System.out.println("================================");
-            System.out.println(ten_benh);
-            System.out.println("================================");
             write_out_phdt(pw, ten_benh, phdt_list);
         } catch (IOException e){
             e.printStackTrace();
@@ -200,19 +195,19 @@ public class Benh {
                 int so_huyet = Integer.parseInt(phdt.replaceAll("\\D",""));
                 String ten_huyet = phdt.replaceAll("^[i|v|x]+\\s*\\d+","").trim();
                 String sql_command = SQLCommand.insert_into("BỆNH_PHDT", ten_benh, so_kinh, so_huyet, ten_huyet);
-//                            pw.println(sql_command);
-                System.out.println(sql_command);
+                pw.println(sql_command);
+//                System.out.println(sql_command);
             } else if (phdt.matches("^[o|0]\\s*\\d+\\D*$")) {
                 int so_kinh = 0;
                 int so_huyet = Integer.parseInt(phdt.replaceAll("\\D",""));
                 String ten_huyet = phdt.replaceAll("^[o|0]\\s*\\d+","").trim();
                 String sql_command = SQLCommand.insert_into("BỆNH_PHDT", ten_benh, so_kinh, so_huyet, ten_huyet);
-//                            pw.println(sql_command);
-                System.out.println(sql_command);
+                pw.println(sql_command);
+//                System.out.println(sql_command);
             } else {
                 String sql_command = SQLCommand.insert_into("BỆNH_PHDT", ten_benh, -1, -1, phdt);
-//                            pw.println(sql_command);
-                System.out.println(sql_command);
+                pw.println(sql_command);
+//                System.out.println(sql_command);
             }
         }
     }

@@ -34,11 +34,10 @@ public class Kinh1 {
                     // 3. store information about new huyet
 
                     // Step 1
-                    String sql_command = insert_huyet_command(so_kinh, so_huyet, ten_huyet,
-                                                              vi_tri, lay_huyet, thu_thuat);
+                    String sql_command = SQLCommand.insert_into("HUYỆT", so_kinh, so_huyet, ten_huyet, vi_tri, lay_huyet, thu_thuat);
                     pw.println(sql_command);
                     for (String chu_tri : chu_tri_array){
-                        sql_command = insert_chu_tri_command(so_kinh, so_huyet, chu_tri);
+                        sql_command = SQLCommand.insert_into("HUYỆT_CHỦ_TRỊ", so_kinh, so_huyet, chu_tri.trim());
                         pw.println(sql_command);
                     }
 
@@ -58,7 +57,7 @@ public class Kinh1 {
                             line = line + ")";
                         }
                         vi_tri += line.substring(line.indexOf('(')+1, line.indexOf(')')).trim();
-                        System.out.println(so_kinh + " " + so_huyet + " " + vi_tri);
+//                        System.out.println(so_kinh + " " + so_huyet + " " + vi_tri);
                         ten_huyet = line.substring(matcher.end(), line.indexOf('(')).replaceAll(":","").trim();
                     } else {
                         ten_huyet = line.substring(matcher.end(), line.length()).replaceAll(":","").trim();
@@ -85,39 +84,16 @@ public class Kinh1 {
                 }
             }
             // write out last huyet
-            String sql_command = insert_huyet_command(so_kinh, so_huyet, ten_huyet,
-                    vi_tri, lay_huyet, thu_thuat);
+            String sql_command = SQLCommand.insert_into("HUYỆT", so_kinh, so_huyet, ten_huyet, vi_tri, lay_huyet, thu_thuat);
             pw.println(sql_command);
 
             for (String chu_tri : chu_tri_array){
-                sql_command = insert_chu_tri_command(so_kinh, so_huyet, chu_tri);
+                sql_command = SQLCommand.insert_into("HUYỆT_CHỦ_TRỊ", so_kinh, so_huyet, chu_tri.trim());
                 pw.println(sql_command);
             }
-
         } catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    private String insert_huyet_command(int so_kinh, int so_huyet,
-                                        String ten_huyet, String vi_tri,
-                                        String lay_huyet, String thu_thuat){
-        return "insert into HUYỆT values(" +
-                so_kinh + ", " +
-                so_huyet + ", " +
-                "\'" + ten_huyet + "\', " +
-                "\'" + vi_tri + "\', " +
-                "\'" + lay_huyet + "\', " +
-                "\'" + thu_thuat + "\'" +
-                ");";
-    }
-
-    private String insert_chu_tri_command(int so_kinh, int so_huyet, String chu_tri){
-        return "insert into HUYỆT_CHỦ_TRỊ values(" +
-                so_kinh + ", " +
-                so_huyet + ", " +
-                "\'" + chu_tri.toLowerCase().trim() + "\'" +
-                ");";
     }
 }
 

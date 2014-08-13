@@ -18,7 +18,7 @@ public class Kinh0 {
                 // so huyet, ten huyet
                 String[] fields = line.split(" ");
                 int so_huyet = Integer.parseInt(fields[0]);
-                String vi_tri = "", ten_huyet = "";
+                String vi_tri = "", ten_huyet;
                 // extract vi_tri embedded in name between brackets ()
                 if (line.contains("(")){
                     vi_tri += line.substring(line.indexOf('(')+1, line.indexOf(')')).trim();
@@ -58,36 +58,11 @@ public class Kinh0 {
                 fields = line.split(":");
                 String thu_thuat = fields[1].trim();
 
-//                System.out.println(so_huyet);
-//                System.out.println(vi_tri);
-//                System.out.println(thu_thuat);
-//                System.out.println(lay_huyet);
-
-//                SỐ_KINH integer NOT NULL,
-//                SỐ_HUYỆT integer NOT NULL,
-//                TÊN_HUYỆT varchar(128) NOT NULL,
-//                VỊ_TRÍ varchar(128) NOT NULL,
-//                LẤY_HUYỆT varchar(256),
-//                THỦ_THUẬT varchar(256)
-
-                String sql_command = "insert into HUYỆT values(" +
-                        so_kinh + ", " +
-                        so_huyet + ", " +
-                        "\'" + ten_huyet + "\', " +
-                        "\'" + vi_tri + "\', " +
-                        "\'" + lay_huyet + "\', " +
-                        "\'" + thu_thuat + "\'" +
-                        ");";
-
+                String sql_command = SQLCommand.insert_into("HUYỆT", so_kinh, so_huyet, ten_huyet, vi_tri, lay_huyet, thu_thuat);
                 pw.println(sql_command);
 
                 for (String chu_tri : chu_tri_array){
-                    sql_command = "insert into HUYỆT_CHỦ_TRỊ values(" +
-                            so_kinh + ", " +
-                            so_huyet + ", " +
-                            "\'" + chu_tri.trim() + "\'" +
-                            ");";
-
+                    sql_command = SQLCommand.insert_into("HUYỆT_CHỦ_TRỊ", so_kinh, so_huyet, chu_tri.trim());
                     pw.println(sql_command);
                 }
             }
