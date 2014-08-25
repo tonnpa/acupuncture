@@ -13,21 +13,48 @@ public class Benh {
         try{
             boolean new_file = temp.createNewFile();
             ConsoleFeedback.create_file(temp, new_file);
+
+            // removes empty lines, dots from end of sentences and
+            // writes everything to lowercase letters
+            trim_text(source, temp);
+
+            // each populating function appends to the destination file
+            // and creates a separate one
+
+            populate_nhom_benh(temp, destination);
+            populate_benh_tc(temp, destination);
+            populate_benh_ccsb(temp, destination);
+            populate_benh_phdt(temp, destination);
+
+            temp.delete();
         } catch (IOException e){
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
-        trim_text(source, temp);
-        populate_nhom_benh(temp, destination);
-        populate_benh_tc(temp, destination);
-        populate_benh_ccsb(temp, destination);
-        populate_benh_phdt(temp, destination);
-        temp.delete();
+
+    }
+    
+    public void clean_input_files(){
+        trim_text(new File("./text_src/3"), new File("./text_src/3_clean"));
+        trim_text(new File("./text_src/4"), new File("./text_src/4_clean"));
+        trim_text(new File("./text_src/5"), new File("./text_src/5_clean"));
+        trim_text(new File("./text_src/6"), new File("./text_src/6_clean"));
+        trim_text(new File("./text_src/Benh"), new File("./text_src/Benh_clean"));
     }
 
-    private void populate_nhom_benh(File source, File destination){
+    private void populate_nhom_benh(File source, File destination) throws IOException{
+        ConsoleFeedback.notify_start();
+
+        File out_separate = new File("./sql/nhom_benh.sql");
+        boolean new_file = out_separate.createNewFile();
+        ConsoleFeedback.create_file(out_separate, new_file);
+
+
+        // BufferedReader can read lines, FileReader can only read bytes
+        // PrintWriter can write lines
         try (BufferedReader br = new BufferedReader(new FileReader(source));
              BufferedReader br_slow = new BufferedReader(new FileReader(source));
-             PrintWriter pw = new PrintWriter(new FileWriter(destination))) {
+             PrintWriter pw = new PrintWriter(new FileWriter(destination, true));
+             PrintWriter pw_separate = new PrintWriter(new FileWriter(out_separate))) {
             //set up readers
             br.readLine();
 
@@ -49,6 +76,7 @@ public class Benh {
                     for (String benh : benh_array){
                         String sql_command = SQLCommand.insert_into("NHÓM_BỆNH", nhom_benh, benh);
                         pw.println(sql_command);
+                        pw_separate.println(sql_command);
 //                        System.out.println(sql_command);
                     }
                     // Step 2
@@ -68,17 +96,24 @@ public class Benh {
             for (String benh : benh_array){
                 String sql_command = SQLCommand.insert_into("NHÓM_BỆNH", nhom_benh, benh);
                 pw.println(sql_command);
+                pw_separate.println(sql_command);
 //                System.out.println(sql_command);
             }
-        } catch (IOException e){
-            e.printStackTrace();
         }
+        ConsoleFeedback.notify_end();
     }
 
-    private void populate_benh_tc(File source, File destination){
+    private void populate_benh_tc(File source, File destination) throws IOException{
+        ConsoleFeedback.notify_start();
+
+        File out_separate = new File("./sql/benh_tc.sql");
+        boolean new_file = out_separate.createNewFile();
+        ConsoleFeedback.create_file(out_separate, new_file);
+
         try (BufferedReader br = new BufferedReader(new FileReader(source));
              BufferedReader br_slow = new BufferedReader(new FileReader(source));
-             PrintWriter pw = new PrintWriter(new FileWriter(destination, true))) {
+             PrintWriter pw = new PrintWriter(new FileWriter(destination, true));
+             PrintWriter pw_separate = new PrintWriter(new FileWriter(out_separate))) {
             //set up readers
             br.readLine();
             String line, prev_line;
@@ -92,6 +127,7 @@ public class Benh {
                     for (String tc : tc_list){
                         String sql_command = SQLCommand.insert_into("BỆNH_TC", ten_benh, tc);
                         pw.println(sql_command);
+                        pw_separate.println(sql_command);
 //                        System.out.println(sql_command);
                     }
                     // Step 2
@@ -108,17 +144,24 @@ public class Benh {
             for (String tc : tc_list){
                 String sql_command = SQLCommand.insert_into("BỆNH_TC", ten_benh, tc);
                 pw.println(sql_command);
+                pw_separate.println(sql_command);
 //                System.out.println(sql_command);
             }
-        } catch (IOException e){
-            e.printStackTrace();
         }
+        ConsoleFeedback.notify_end();
     }
 
-    private void populate_benh_ccsb(File source, File destination){
+    private void populate_benh_ccsb(File source, File destination) throws IOException{
+        ConsoleFeedback.notify_start();
+
+        File out_separate = new File("./sql/benh_ccsb.sql");
+        boolean new_file = out_separate.createNewFile();
+        ConsoleFeedback.create_file(out_separate, new_file);
+
         try (BufferedReader br = new BufferedReader(new FileReader(source));
              BufferedReader br_slow = new BufferedReader(new FileReader(source));
-             PrintWriter pw = new PrintWriter(new FileWriter(destination, true))) {
+             PrintWriter pw = new PrintWriter(new FileWriter(destination, true));
+             PrintWriter pw_separate = new PrintWriter(new FileWriter(out_separate))) {
             //set up readers
             br.readLine();
             String line, prev_line;
@@ -133,19 +176,26 @@ public class Benh {
                     String sql_command = SQLCommand.insert_into("BỆNH_CCSB", ten_benh, ccsb);
                     if (!ccsb.isEmpty()){
                         pw.println(sql_command);
+                        pw_separate.println(sql_command);
 //                        System.out.println(sql_command);
                     }
                 }
             }
-        } catch (IOException e){
-            e.printStackTrace();
         }
+        ConsoleFeedback.notify_end();
     }
 
-    private void populate_benh_phdt(File source, File destination){
+    private void populate_benh_phdt(File source, File destination) throws IOException{
+        ConsoleFeedback.notify_start();
+
+        File out_separate = new File("./sql/benh_phdt.sql");
+        boolean new_file = out_separate.createNewFile();
+        ConsoleFeedback.create_file(out_separate, new_file);
+
         try (BufferedReader br = new BufferedReader(new FileReader(source));
              BufferedReader br_slow = new BufferedReader(new FileReader(source));
-             PrintWriter pw = new PrintWriter(new FileWriter(destination, true))) {
+             PrintWriter pw = new PrintWriter(new FileWriter(destination, true));
+             PrintWriter pw_separate = new PrintWriter(new FileWriter(out_separate))) {
             //set up readers
             br.readLine();
             String line, prev_line;
@@ -157,7 +207,7 @@ public class Benh {
                 prev_line = br_slow.readLine();
                 if (line.startsWith("tc")){
                     // Step 1
-                    write_out_phdt(pw, ten_benh, phdt_list);
+                    write_out_phdt(pw, pw_separate, ten_benh, phdt_list);
 
                     // Step 2
                     phdt_list.clear();
@@ -182,13 +232,12 @@ public class Benh {
                     phdt_catch = false;
                 }
             }
-            write_out_phdt(pw, ten_benh, phdt_list);
-        } catch (IOException e){
-            e.printStackTrace();
+            write_out_phdt(pw, pw_separate, ten_benh, phdt_list);
         }
+        ConsoleFeedback.notify_end();
     }
 
-    private void write_out_phdt(PrintWriter pw, String ten_benh, List<String> phdt_list){
+    private void write_out_phdt(PrintWriter pw, PrintWriter pw_separate, String ten_benh, List<String> phdt_list){
         for (String phdt : phdt_list){
             if (phdt.matches("^[i|v|x]+\\s*\\d+\\D*$")){
                 int so_kinh = RomanNumeral.romanToInteger(phdt.replaceAll("\\s*\\d+\\D*$",""));
@@ -196,6 +245,7 @@ public class Benh {
                 String ten_huyet = phdt.replaceAll("^[i|v|x]+\\s*\\d+","").trim();
                 String sql_command = SQLCommand.insert_into("BỆNH_PHDT", ten_benh, so_kinh, so_huyet, ten_huyet);
                 pw.println(sql_command);
+                pw_separate.println(sql_command);
 //                System.out.println(sql_command);
             } else if (phdt.matches("^[o|0]\\s*\\d+\\D*$")) {
                 int so_kinh = 0;
@@ -203,10 +253,12 @@ public class Benh {
                 String ten_huyet = phdt.replaceAll("^[o|0]\\s*\\d+","").trim();
                 String sql_command = SQLCommand.insert_into("BỆNH_PHDT", ten_benh, so_kinh, so_huyet, ten_huyet);
                 pw.println(sql_command);
+                pw_separate.println(sql_command);
 //                System.out.println(sql_command);
             } else {
                 String sql_command = SQLCommand.insert_into("BỆNH_PHDT", ten_benh, -1, -1, phdt);
                 pw.println(sql_command);
+                pw_separate.println(sql_command);
 //                System.out.println(sql_command);
             }
         }
